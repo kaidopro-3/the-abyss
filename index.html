@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE ABYSS // Control Panel</title>
+<style>
+:root {
+    --bg: #020406;
+    --panel: #070d10;
+    --green: #00ff88;
+    --blue: #00aaff;
+    --red: #ff174f;
+    --yellow: #ffeb3b;
+    --text: #e7f5f0;
+    --muted: #5a6d68;
+    --border: rgba(0,255,136,.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: "Segoe UI", Tahoma, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+/* Header */
+header { position: sticky; top: 0; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(2,4,6,.96); border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); z-index: 50; }
+h1 { font-family: "Courier New", monospace; font-size: 16px; font-weight: 800; color: var(--green); text-shadow: 0 0 12px rgba(0,255,136,.5); letter-spacing: 2px; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.refresh-btn { background: rgba(0,255,136,.08); border: 1px solid rgba(0,255,136,.35); color: var(--green); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: .2s; }
+.refresh-btn:hover { background: rgba(0,255,136,.2); box-shadow: 0 0 12px rgba(0,255,136,.3); }
+
+/* Layout */
+main { max-width: 1600px; margin: 0 auto; padding: 20px 24px; }
+.dashboard-grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+
+/* Sidebar */
+.sidebar { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; height: fit-content; }
+.device-info { background: #0a1418; border: 1px solid rgba(0,255,136,.15); border-radius: 8px; padding: 10px; margin-bottom: 14px; }
+.device-info label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+.sidebar select { width: 100%; background: #0a1418; color: var(--yellow); padding: 10px; border: 1px solid rgba(255,235,59,.3); border-radius: 6px; margin-bottom: 8px; font-size: 14px; cursor: pointer; font-family: inherit; }
+.status-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 8px var(--red); }
+.status-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+.menu-list { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.menu-btn { background: #0a1418; color: var(--text); border: 1px solid var(--border); padding: 10px 12px; text-align: right; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all .2s; font-family: inherit; }
+.menu-btn:hover, .menu-btn.active { background: rgba(0,255,136,.1); border-color: var(--green); color: var(--green); font-weight: bold; box-shadow: 0 0 10px rgba(0,255,136,.15); }
+
+/* Content */
+.content-area { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; min-height: 600px; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn .3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+h3 { color: var(--yellow); font-size: 15px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; letter-spacing: 1px; }
+
+/* Command Panel */
+.command-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.cmd-btn { background: #0a1418; border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; text-align: center; transition: .2s; font-family: inherit; }
+.cmd-btn:hover { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 10px rgba(0,170,255,.2); }
+.cmd-btn.danger:hover { border-color: var(--red); color: var(--red); box-shadow: 0 0 10px rgba(255,23,79,.2); }
+
+/* Gallery */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+.gallery-item { background: #05080a; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 8px; transition: .2s; }
+.gallery-item:hover { border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,136,.2); }
+.gallery-thumb { width: 100%; height: 110px; background: #0a1418; display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 28px; border-radius: 4px; margin-bottom: 6px; }
+.gallery-name { font-size: 10px; color: var(--muted); margin: 4px 0; word-break: break-all; text-align: center; max-width: 100%; }
+.download-btn { background: var(--green); color: #000; text-decoration: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; width: 100%; text-align: center; display: block; }
+.download-btn:hover { background: #00cc6a; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 10px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
+th { background: #0a1418; color: var(--yellow); font-weight: 600; letter-spacing: .5px; }
+tr:hover { background: rgba(0,255,136,.02); }
+.empty-msg { text-align: center; color: var(--muted); padding: 30px; font-size: 13px; }
+
+/* Network Info */
+.network-info { padding: 16px; background: #05080a; border-radius: 8px; border: 1px solid var(--border); }
+.network-info p { margin: 8px 0; font-size: 13px; }
+.network-info span { color: var(--green); font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>◢ THE ABYSS // CONTROL PANEL ◣</h1>
+    <div class="header-actions">
+        <button class="refresh-btn" onclick="window.location.reload()">🔄 تحديث</button>
+    </div>
+</header>
+
+<main>
+    <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="device-info">
+                <label>الجهاز المتصل:</label>
+                <select id="deviceSelect" onchange="selectDevice(this.value)">
+                    <option value="">جاري البحث عن أجهزة...</option>
+                </select>
+                <div class="status-badge">
+                    <div id="statusDot" class="status-dot"></div>
+                    <span id="statusText" style="color: var(--red);">غير متصل</span>
+                </div>
+            </div>
+            <div class="menu-list">
+                <button class="menu-btn active" onclick="switchTab('commands')">⚡ لوحة التحكم</button>
+                <button class="menu-btn" onclick="switchTab('studio')">🖼️ معرض الصور</button>
+                <button class="menu-btn" onclick="switchTab('screenshots')">📸 لقطات الشاشة</button>
+                <button class="menu-btn" onclick="switchTab('contacts')">📇 جهات الاتصال</button>
+                <button class="menu-btn" onclick="switchTab('calls')">📞 سجل المكالمات</button>
+                <button class="menu-btn" onclick="switchTab('messages')">📩 الرسائل SMS</button>
+                <button class="menu-btn" onclick="switchTab('network')">🌐 معلومات الشبكة</button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-area">
+            <!-- Commands Tab -->
+            <div id="commandsTab" class="tab-pane active">
+                <h3>⚡ تنفيذ الأوامر عن بُعد</h3>
+                <div class="command-panel">
+                    <button class="cmd-btn" onclick="sendCommand('vibrate')">📳 اهتزاز الجهاز</button>
+                    <button class="cmd-btn" onclick="openApp()">📱 فتح تطبيق</button>
+                    <button class="cmd-btn" onclick="sendCommand('screenshot')">📸 التقاط صورة</button>
+                    <button class="cmd-btn" onclick="sendCommand('ping')">📡 Ping</button>
+                    <button class="cmd-btn danger" onclick="sendCommand('lock')">🔒 قفل الشاشة</button>
+                    <button class="cmd-btn danger" onclick="sendCommand('reboot')">🔄 إعادة تشغيل</button>
+                </div>
+                <h3 style="margin-top: 24px;">📋 سجل النتائج</h3>
+                <div id="commandLog" class="network-info">
+                    <p style="color: var(--muted);">لا توجد نتائج بعد...</p>
+                </div>
+            </div>
+
+            <!-- Studio Tab -->
+            <div id="studioTab" class="tab-pane">
+                <h3>🖼️ معرض الصور (DCIM/Camera)</h3>
+                <div id="studioGallery" class="gallery-grid">
+                    <p class="empty-msg">بانتظار البيانات من الهاتف...</p>
+                </div>
+            </div>
+
+            <!-- Screenshots Tab -->
+            <div id="screenshotsTab" class="tab-pane">
+                <h3>📸 لقطات الشاشة</h3>
+                <div id="screenshotsGallery" class="gallery-grid">
+                    <p class="empty-msg">بانتظار البيانات من الهاتف...</p>
+                </div>
+            </div>
+
+            <!-- Contacts Tab -->
+            <div id="contactsTab" class="tab-pane">
+                <h3>📇 جهات الاتصال</h3>
+                <table id="contactsTable">
+                    <thead><tr><th>الاسم</th><th>الرقم</th></tr></thead>
+                    <tbody><tr><td colspan="2" class="empty-msg">بانتظار البيانات...</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Calls Tab -->
+            <div id="callsTab" class="tab-pane">
+                <h3>📞 سجل المكالمات</h3>
+                <table id="callsTable">
+                    <thead><tr><th>النوع</th><th>الرقم</th></tr></thead>
+                    <tbody><tr><td colspan="2" class="empty-msg">بانتظار البيانات...</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Messages Tab -->
+            <div id="messagesTab" class="tab-pane">
+                <h3>📩 الرسائل النصية SMS</h3>
+                <table id="messagesTable">
+                    <thead><tr><th>المرسل</th><th>النص</th></tr></thead>
+                    <tbody><tr><td colspan="2" class="empty-msg">بانتظار البيانات...</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Network Tab -->
+            <div id="networkTab" class="tab-pane">
+                <h3>🌐 معلومات الشبكة والجهاز</h3>
+                <div class="network-info">
+                    <p>حالة الاتصال: <span id="netStatus">غير معروف</span></p>
+                    <p>معرف الجهاز: <span id="netDeviceId">-</span></p>
+                    <p>آخر ظهور: <span id="netLastSeen">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
